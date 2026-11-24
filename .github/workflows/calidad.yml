@@ -1,8 +1,12 @@
 name: Puerta de calidad del modelo
 
 on:
-  push:            # cada vez que se suben cambios
-  workflow_dispatch:   # permite ejecutarlo a mano desde la pestaña Actions
+  push:
+  workflow_dispatch:
+    inputs:
+      modelo:
+        description: "Ruta del modelo a revisar"
+        default: "modelos/modelo_p65_int8.onnx"
 
 jobs:
   pruebas:
@@ -20,4 +24,6 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Correr la puerta de calidad
+        env:
+          MODELO: ${{ github.event.inputs.modelo || 'modelos/modelo_p65_int8.onnx' }}
         run: pytest tests/ -v
